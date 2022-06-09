@@ -13,9 +13,11 @@ def solve(a, b, c):
         return f'= {x1} or {x2}'
 
 def index(request):
+    # request.session.modified = True
     a, b, c, = request.session.get('a', 'a'), request.session.get('b', 'b'), request.session.get('c', 'c')
     answer = ''
-    if request.session['variables']:
+    # if request.session['variables']:
+    if request.session.get('variables', False):
         unknown_variables = request.session.get('variables')
     else:
         unknown_variables = ['a', 'b', 'c']
@@ -53,12 +55,24 @@ def index(request):
                 unknown_variables.remove('c')
             except ValueError:
                 print('remove c')
-        if len(unknown_variables) > 1:
-            content['message'] = f"please, change variables: {', '.join(unknown_variables)}"
-        else:
-            content['message'] = f"please, change variable: {', '.join(unknown_variables)}"
+
         if len(request.session.get('variables')) == 0:
             request.session['variables'] = ['full']
         return redirect('/')
-    request.session['variables'] = request.session['variables']
+    if len(unknown_variables) > 1:
+        content['message'] = f"please, change variables: {', '.join(unknown_variables)}"
+    elif unknown_variables[0] != 'full':
+        content['message'] = f"please, change variable: {', '.join(unknown_variables)}"
+    else:
+        content['message'] = ''
+    # request.session['variables'] = request.session['variables']
     return render(request, 'index.html', content)
+
+def box(request):
+    if request.POST:
+        print(request.POST)
+    if request.GET:
+        print(request.GET)
+    message = 'You color is red?'
+    # message = ''
+    return render(request, 'box.html', context={'message': message})
