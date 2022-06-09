@@ -24,6 +24,7 @@
     <p><input type="submit" value="solve">
 </p>
 </form>
+<a href="{% url 'clear' %}">clear</a>
 <p>{{ a }} * x<sup>2</sup> + {{ b }} * x + {{ c }} {{ answer }}</p>
 <p>go to page <a href="{% url 'box' %}">box</a></p>
 </body>

@@ -15,7 +15,8 @@
 </form>
 {% if  message  %}
 <p>{{ message }}</p>
-    <form method="get">
+    <form method="post">
+    {% csrf_token %}
         <button name="answer" value="yes">Yes</button>
         <button name="answer" value="no">No</button>
     </form>

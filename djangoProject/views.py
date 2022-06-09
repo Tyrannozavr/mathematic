@@ -1,3 +1,5 @@
+import random
+
 from django.shortcuts import render, redirect
 
 def solve(a, b, c):
@@ -68,11 +70,23 @@ def index(request):
     # request.session['variables'] = request.session['variables']
     return render(request, 'index.html', content)
 
+def clear(request):
+    for key in list(request.session.keys()):
+        del request.session[key]
+    return redirect('/')
+
+def predict_color(number):
+    blue = 0
+    green = 0
+    red = 0
+    return random.choice(['1', '2', '3'])
+
 def box(request):
+    message = ''
     if request.POST:
-        print(request.POST)
-    if request.GET:
-        print(request.GET)
-    message = 'You color is red?'
-    # message = ''
+        number = request.POST.get('number')
+        message = f'You color is {predict_color(number)}?'
+        print(number)
+        if request.POST.get('answer'):
+            message = ''
     return render(request, 'box.html', context={'message': message})
