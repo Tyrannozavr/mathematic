@@ -75,18 +75,40 @@ def clear(request):
         del request.session[key]
     return redirect('/')
 
-def predict_color(number):
-    blue = 0
-    green = 0
-    red = 0
+def predict_color(request, train = False, answer = None):
+    # print(request.session.get('number'))
+    if request.session.get('first', False):
+        request.session['blue'] = []
+        request.session['green'] = []
+        request.session['red'] = []
+        request.session['probably_blue'] = [i for i in range(100)]
+        request.session['probably_green'] = [i for i in range(100)]
+        request.session['probably_red'] = [i for i in range(100)]
+        request.session['first'] = False
+    if train:
+        number = request.session.get('number')
+        print('train', number, answer)
+    blue = request.session.get('blue')
+    green = request.session.get('green')
+    red = request.session.get('red')
+    probably_blue = request.session.get('probably_blue')
+    probably_green = request.session.get('brobably_green')
+    probably_red = request.session.get('probably_red')
+    # print(probably_red)
     return random.choice(['1', '2', '3'])
 
 def box(request):
     message = ''
     if request.POST:
-        number = request.POST.get('number')
-        message = f'You color is {predict_color(number)}?'
-        print(number)
-        if request.POST.get('answer'):
+        if request.session.get('first', True):
+            request.session['first'] = True
+        new_number = request.POST.get('number')
+        if new_number is not None:
+            request.session['number'] = new_number
+
+        message = f'You color is {predict_color(request)}?'
+        answer = request.POST.get('answer', False)
+        if answer:
+            predict_color(request, train=True, answer=answer)
             message = ''
     return render(request, 'box.html', context={'message': message})
