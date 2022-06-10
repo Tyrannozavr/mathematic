@@ -77,6 +77,7 @@ def clear(request):
 
 def predict_color(request, train = False, answer = None):
     # print(request.session.get('number'))
+    # request.session['first'] = True
     if request.session.get('first', False):
         request.session['blue'] = []
         request.session['green'] = []
@@ -84,16 +85,30 @@ def predict_color(request, train = False, answer = None):
         request.session['probably_blue'] = [i for i in range(100)]
         request.session['probably_green'] = [i for i in range(100)]
         request.session['probably_red'] = [i for i in range(100)]
+        all_colors = [0 for i in range(75)] #this is probability blue color
+        all_colors.extend([1 for i in range(15)]) #this is probabiliey green color
+        all_colors.extend([2 for i in range(10)]) #this is probability red color
+        request.session['all_colors'] = all_colors
         request.session['first'] = False
+        request.session['number_color'] = [[0, 1, 2] for i in range(1, 101)]
     if train:
-        number = request.session.get('number')
         print('train', number, answer)
+    # request.session['number_color'] = 1
+    print('test', request.session['probably_blue'])
+    number = int(request.session.get('number'))
     blue = request.session.get('blue')
     green = request.session.get('green')
     red = request.session.get('red')
     probably_blue = request.session.get('probably_blue')
     probably_green = request.session.get('brobably_green')
     probably_red = request.session.get('probably_red')
+    all_color = request.session.get('all_colors')
+    number_color = request.session.get('number_color')[number]
+    answer = []
+    for i in number_color:
+        color_prob = 1 / len(probably_blue) * all_color.count(i)
+        answer.extend([i for j in range(round(color_prob*100))])
+    print(answer)
     # print(probably_red)
     return random.choice(['1', '2', '3'])
 
