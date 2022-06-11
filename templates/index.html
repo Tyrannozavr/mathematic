@@ -2,30 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>singe page</title>
+    <title>test</title>
 </head>
 <body>
-<h2>Hello, this is single page for solving equation</h2>
-<p>{{ message }}</p>
-<form method="post">
-    {% csrf_token %}
-    <p>
-        <label for="inp_a">a = </label>
-        <input type="number" name="a" id="inp_a">
-    </p>
-    <p>
-        <label for="inp_b">b = </label>
-        <input type="number" name="b" id="inp_b">
-    </p>
-    <p>
-        <label for="inp_c">c = </label>
-        <input type="number" name="c" id="inp_c">
-    </p>
-    <p><input type="submit" value="solve">
-</p>
-</form>
-<a href="{% url 'clear' %}">clear</a>
-<p>{{ a }} * x<sup>2</sup> + {{ b }} * x + {{ c }} {{ answer }}</p>
-<p>go to page <a href="{% url 'box' %}">box</a></p>
+<h2>This is page solution <a href="{% url 'equations' %}">equations</a></h2>
+<h2>This is page <a href="{% url 'predict' %}">predict</a> colors</h2>
+<h2><a href="{% url 'clear' %}">reset</a> all variables</h2>
+
 </body>
 </html>
