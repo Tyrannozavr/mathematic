@@ -15,10 +15,8 @@ def solve(a, b, c):
         return f'= {x1} or {x2}'
 
 def index(request):
-    # request.session.modified = True
     a, b, c, = request.session.get('a', 'a'), request.session.get('b', 'b'), request.session.get('c', 'c')
     answer = ''
-    # if request.session['variables']:
     if request.session.get('variables', False):
         unknown_variables = request.session.get('variables')
     else:
@@ -67,7 +65,6 @@ def index(request):
         content['message'] = f"please, change variable: {', '.join(unknown_variables)}"
     else:
         content['message'] = ''
-    # request.session['variables'] = request.session['variables']
     return render(request, 'index.html', content)
 
 def clear(request):
@@ -77,8 +74,6 @@ def clear(request):
 
 def predict_color(request, train = False, answer = None):
     request.session.modified = True
-    # print(request.session.get('number'))
-    # request.session['first'] = True
     if request.session.get('first', False):
         request.session['blue'] = []
         request.session['green'] = []
@@ -96,7 +91,6 @@ def predict_color(request, train = False, answer = None):
         all_colors = request.session.get('all_colors')
         number = int(request.session.get('number'))
         previous_result = request.session.get('previous_result')
-        print('train', answer, number, previous_result)
         if answer == 'yes':
             request.session['number_color'][number-1] = [previous_result]
             if all_colors.count(previous_result) > 5:
@@ -116,17 +110,11 @@ def predict_color(request, train = False, answer = None):
             else:
                 print('only one option left')
         return redirect('/box')
-    # request.session['number_color'] = 1
-    # print('test', request.session['probably_blue'])
     number = int(request.session.get('number'))
-    # blue = request.session.get('blue')
-    # green = request.session.get('green')
-    # red = request.session.get('red')
     probably_blue = request.session.get('probably_blue')
     probably_green = request.session.get('probably_green')
     probably_red = request.session.get('probably_red')
     all_color = request.session.get('all_colors')
-    # request.session['number_color'][0] = [0, 1, 2]
     number_color = request.session.get('number_color')[number-1]
     result = []
     colors = {
@@ -137,11 +125,9 @@ def predict_color(request, train = False, answer = None):
     for i in number_color:
         color_prob = 1 / len(colors[i]) * all_color.count(i)
         result.extend([i for j in range(round(color_prob*100))])
-    print('number', number, 'variants: ', number_color)
-    # print(result.count(0), result.count(1), result.count(2))
+    # print('number', number, 'variants: ', number_color)
     predict = random.choice(result)
     request.session['previous_result'] = predict
-    # print(all_color.count(0))
     return predict
 
 def box(request):
@@ -155,33 +141,29 @@ def box(request):
     if request.POST:
         if request.session.get('first', True):
             request.session['first'] = True
-        # print(request.POST.get('number'))
         new_number = request.POST.get('number')
+        print(new_number)
         if new_number == '':
-            print('zero')
+            # print('zero')
             if request.session.get('number', False):
                 return redirect('/box')
-            # elif not request.session.get('number'):
-            #     print('not')
-            #     return redirect('box')
             else:
                 new_number = request.session.get('number')
         else:
-            print('post', request.POST)
-            new_number = request.session.get('number')
-            # new_number = int(new_number)
-        # if new_number:
-        #     new_number = int(new_number)
-        # else:
-        #     return redirect('/box')
+            if new_number is not None:
+                new_number = int(new_number)
+                request.session['number'] = new_number
+            else:
+                new_number = request.session.get('number')
+            # new_number = int(request.POST.get('number'))
         if new_number is not None:
             request.session['number'] = new_number
         answer = request.POST.get('answer', False)
-        print('answer', answer)
         if answer:
             predict_color(request, train=True, answer=answer)
             message = ''
         else:
+            # print(new_number, request.session.get('number'))
             if len(request.session.get('number_color')[new_number-1]) == 1:
                 accuracy = '1'
                 message = f'The thing {new_number} is {colors[predict_color(request)]}'
