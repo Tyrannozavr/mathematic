@@ -1,8 +1,6 @@
 from django.shortcuts import render, redirect
 import random
 
-# def predict(request):
-#     return render(request, 'predicts/predict.html')
 
 def initialize_variables(request):
     '''
@@ -20,7 +18,6 @@ def initialize_variables(request):
     all_colors.extend([1 for i in range(15)])  # this is probabiliey green color
     all_colors.extend([2 for i in range(10)])  # this is probability red color
     request.session['all_colors'] = all_colors
-    # request.session['first'] = False
     request.session['number_color'] = [[0, 1, 2] for i in range(1, 101)]
 
 def predict_color(request, train=False, answer=None):
@@ -31,9 +28,6 @@ def predict_color(request, train=False, answer=None):
     :return: number color
     '''
     request.session.modified = True
-    # if request.session.get('first', False):
-    #     initialize_variables(request)
-
     if train:
         all_colors = request.session.get('all_colors')
         number = int(request.session.get('number'))
@@ -44,7 +38,6 @@ def predict_color(request, train=False, answer=None):
                 all_colors.remove(previous_result)
         else:
             if len(request.session.get('number_color')[number - 1]) > 1:
-                # print('requirement: ', len(request.session.get('number_color')[number - 1]) > 1)
                 try:
                     print('delete', number - 1, request.session.get('number_color')[number - 1])
                     request.session['number_color'][number - 1].remove(previous_result)
@@ -91,15 +84,9 @@ def predict(request):
         2: 'red',
     }
     if request.session.get('first', True):
-        # print(request.session.get('blue'))
         initialize_variables(request)
         request.session['first'] = False
-        # print(request.session.get('blue'))
     if request.POST:
-        # if request.session.get('first', True):
-        #     print(request.session.get('first', True), 'initialize')
-        #     print(request.session.get(''))
-        #     request.session['first'] = True
         new_number = request.POST.get('number')
         if new_number == '':
             if request.session.get('number', False):

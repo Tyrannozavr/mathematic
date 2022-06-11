@@ -1,5 +1,3 @@
-import random
-
 from django.shortcuts import redirect, render
 
 def index(request):
